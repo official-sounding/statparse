@@ -1,6 +1,7 @@
 package com.officialsounding.statparse.workers;
 
 import com.officialsounding.statparse.models.*;
+import com.officialsounding.statparse.models.intermediate.*;
 import org.apache.poi.ss.usermodel.*;
 
 import java.util.ArrayList;
@@ -15,7 +16,8 @@ import java.util.stream.IntStream;
 public class Reader {
 
     private final int HOME_TEAM = 1;
-    private final int AWAY_TEAM = 26;
+    private final int AWAY_TEAM_LINEUPS = 26;
+    private final int AWAY_TEAM_SCORE = 19;
 
     private DataFormatter formatter = new DataFormatter(Locale.US);
 
@@ -31,6 +33,44 @@ public class Reader {
         //emit game
 
         return new Game(null, null);
+    }
+
+    public ScoreResults parseScore(Workbook bk) {
+        FormulaEvaluator evaluator = bk.getCreationHelper().createFormulaEvaluator();
+        Sheet score = bk.getSheet("Score");
+
+        List<ScoreEntry> homeJams = new ArrayList<>();
+        List<ScoreEntry> awayJams = new ArrayList<>();
+
+        //first half is (zero-indexed) rows 3-40
+        //second half is (zero-indexed) rows 45-83
+
+        for(int rowIdx = 3; rowIdx < 83; rowIdx++) {
+
+            if (rowIdx > 40 && rowIdx < 45) {
+                continue;
+            }
+
+            Row row = score.getRow(rowIdx);
+            String jamNumber = formatter.formatCellValue(row.getCell(0), evaluator);
+
+
+            //skip blank or starpass rows
+            if(    jamNumber == ""
+                    || jamNumber == "SP"
+                    || jamNumber == "SP*") {
+                continue;
+            }
+
+            Participant homeJammer = buildParticipant(row, evaluator, HOME_TEAM, 0);
+            Participant awayJammer = buildParticipant(row, evaluator, AWAY_TEAM_SCORE, 0);
+
+
+
+
+
+        }
+        return null;
     }
 
     public LineupResults parseLineups(Workbook bk) {
@@ -68,12 +108,12 @@ public class Reader {
 
             List<Participant> awayParticipants = IntStream
                                 .range(0,5)
-                                .mapToObj(p -> buildParticipant(row, evaluator, AWAY_TEAM, p))
+                                .mapToObj(p -> buildParticipant(row, evaluator, AWAY_TEAM_LINEUPS, p))
                                 .collect(Collectors.toList());
 
             //check the following row for starpasses
             Cell homeSPCell = lineups.getRow(rowIdx+1).getCell(HOME_TEAM - 1);
-            Cell awaySPCell = lineups.getRow(rowIdx+1).getCell(AWAY_TEAM - 1);
+            Cell awaySPCell = lineups.getRow(rowIdx+1).getCell(AWAY_TEAM_LINEUPS - 1);
             boolean homeSP = false;
             boolean awaySP = false;
 

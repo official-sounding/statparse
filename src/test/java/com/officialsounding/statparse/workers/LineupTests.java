@@ -1,7 +1,7 @@
 package com.officialsounding.statparse.workers;
 
-import com.officialsounding.statparse.models.LineupEntry;
-import com.officialsounding.statparse.models.LineupResults;
+import com.officialsounding.statparse.models.intermediate.LineupEntry;
+import com.officialsounding.statparse.models.intermediate.LineupResults;
 import com.officialsounding.statparse.models.Participant;
 import com.officialsounding.statparse.models.PlayerType;
 import org.apache.poi.ss.usermodel.Workbook;

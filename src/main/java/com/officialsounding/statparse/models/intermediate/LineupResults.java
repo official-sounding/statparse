@@ -1,4 +1,4 @@
-package com.officialsounding.statparse.models;
+package com.officialsounding.statparse.models.intermediate;
 
 import java.util.List;
 
