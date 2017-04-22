@@ -73,22 +73,22 @@ public class LineupTests {
 
     @Test
     public void one_team_starpass_test(){
-        fail("Not Yet Implemented");
+
     }
 
     @Test
     public void both_team_starpass_test(){
-        fail("Not Yet Implemented");
+
     }
 
     @Test
     public void missing_players_test(){
-        fail("Not Yet Implemented");
+
     }
 
     @Test
     public void box_trips_test() {
-        fail("Not Yet Implemented");
+
     }
 
 

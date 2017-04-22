@@ -1,4 +1,5 @@
 group 'com.officialsounding'
+name 'statparse'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
@@ -13,5 +14,6 @@ repositories {
 dependencies {
     compile group: 'org.apache.poi', name: 'poi', version: '3.14'
     compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.14'
+    compile group: 'xerces', name: 'xercesImpl', version: '2.8.0'
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
