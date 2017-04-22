@@ -16,10 +16,10 @@ public class Jam {
     private final boolean injury;
     private final boolean lead;
 
-    private final List<Participant> participants;
+    private final List<Skater> participants;
     private List<Pass> passes;
 
-    public Jam(int period, int jamNumber, boolean starpass, boolean called, boolean lost, boolean injury, boolean lead, List<Participant> participants, List<Pass> passes) {
+    public Jam(int period, int jamNumber, boolean starpass, boolean called, boolean lost, boolean injury, boolean lead, List<Skater> participants, List<Pass> passes) {
         this.period = period;
         this.jamNumber =jamNumber;
         this.starpass = starpass;
@@ -59,7 +59,7 @@ public class Jam {
         return lead;
     }
 
-    public List<Participant> getParticipants() {
+    public List<Skater> getParticipants() {
         return participants;
     }
 

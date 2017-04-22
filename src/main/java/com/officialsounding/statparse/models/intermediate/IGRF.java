@@ -1,13 +1,15 @@
-package com.officialsounding.statparse.models;
+package com.officialsounding.statparse.models.intermediate;
+
+import com.officialsounding.statparse.models.Team;
 
 /**
- * Created by Peter on 8/23/2016.
+ * Created by Peter on 4/21/2017.
  */
-public class Game {
+public class IGRF {
     private final Team home;
     private final Team away;
 
-    public Game(Team home, Team away) {
+    public IGRF(Team home, Team away) {
         this.home = home;
         this.away = away;
     }

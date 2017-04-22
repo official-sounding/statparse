@@ -1,6 +1,6 @@
 package com.officialsounding.statparse.models.intermediate;
 
-import com.officialsounding.statparse.models.Participant;
+import com.officialsounding.statparse.models.Skater;
 
 import java.util.List;
 

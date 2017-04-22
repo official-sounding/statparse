@@ -2,8 +2,9 @@ package com.officialsounding.statparse.workers;
 
 import com.officialsounding.statparse.models.intermediate.LineupEntry;
 import com.officialsounding.statparse.models.intermediate.LineupResults;
-import com.officialsounding.statparse.models.Participant;
+import com.officialsounding.statparse.models.Skater;
 import com.officialsounding.statparse.models.PlayerType;
+import com.officialsounding.statparse.models.intermediate.Participant;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.*;
