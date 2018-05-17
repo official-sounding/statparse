@@ -66,6 +66,8 @@ public class IGRFToCRG {
                 writer.writeOutput(export);
             }
         }
+
+        System.exit(0);
     }
 
     public List<CrgExportTeam> generateFromIGRF(IGRF igrf) {

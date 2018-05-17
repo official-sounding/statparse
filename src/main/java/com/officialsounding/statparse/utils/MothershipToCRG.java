@@ -36,26 +36,30 @@ public class MothershipToCRG {
             }
         }
 
-        for (File csv : input) {
-            CrgExportTeam team = translator.teamFromCSV(csv);
-            export.getTeams().add(team);
+        if(input.size() > 0) {
+            for (File csv : input) {
+                CrgExportTeam team = translator.teamFromCSV(csv);
+                export.getTeams().add(team);
+            }
+
+
+            FileDialog saveFileDialog = new FileDialog(new Frame(), "Save CRG Export", FileDialog.SAVE);
+            saveFileDialog.setFile("export.xml");
+            saveFileDialog.setVisible(true);
+
+            File output = new File(saveFileDialog.getDirectory(), saveFileDialog.getFile());
+
+            if (!output.exists()) {
+                output.createNewFile();
+            }
+
+
+            try (CRGXMLWriter writer = new CRGXMLWriter(new FileOutputStream(output))) {
+                writer.writeOutput(export);
+            }
         }
 
-
-        FileDialog saveFileDialog = new FileDialog(new Frame(), "Save CRG Export", FileDialog.SAVE);
-        saveFileDialog.setFile("export.xml");
-        saveFileDialog.setVisible(true);
-
-        File output = new File(saveFileDialog.getDirectory(),saveFileDialog.getFile());
-
-        if(!output.exists()) {
-            output.createNewFile();
-        }
-
-
-        try(CRGXMLWriter writer = new CRGXMLWriter(new FileOutputStream(output))) {
-            writer.writeOutput(export);
-        }
+        System.exit(0);
     }
 
     public CrgExportTeam teamFromCSV(File csvFile) {
