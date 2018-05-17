@@ -30,8 +30,8 @@ public class IGRFParser {
                 homeRoster.add(home);
             }
 
-            if(!row.getCell(7).getStringCellValue().isEmpty()) {
-                Skater away = new Skater(row.getCell(7).getStringCellValue(), row.getCell(8).getStringCellValue());
+            if(!row.getCell(8).getStringCellValue().isEmpty()) {
+                Skater away = new Skater(row.getCell(8).getStringCellValue(), row.getCell(9).getStringCellValue());
                 awayRoster.add(away);
             }
         }
@@ -41,7 +41,7 @@ public class IGRFParser {
         Row color = igrf.getRow(11);
 
         Team home = new Team(league.getCell(1).getStringCellValue(), teamNames.getCell(1).getStringCellValue(), color.getCell(1).getStringCellValue(), homeRoster);
-        Team away = new Team(league.getCell(7).getStringCellValue(), teamNames.getCell(7).getStringCellValue(), color.getCell(7).getStringCellValue(), awayRoster);
+        Team away = new Team(league.getCell(7).getStringCellValue(), teamNames.getCell(8).getStringCellValue(), color.getCell(8).getStringCellValue(), awayRoster);
 
         //TODO Read Game Info
 
