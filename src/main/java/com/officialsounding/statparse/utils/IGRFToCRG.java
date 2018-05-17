@@ -6,16 +6,11 @@ import com.officialsounding.statparse.workers.IGRFParser;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 /**
@@ -25,29 +20,57 @@ public class IGRFToCRG {
 
 
     public static void main(String[] args) throws IOException, InvalidFormatException {
-        String inputFile = args[0];
-        String outputFile = args[1];
 
-        Workbook wb = WorkbookFactory.create(new File(inputFile));
         IGRFParser parser = new IGRFParser();
-        IGRFToCRG exporter = new IGRFToCRG();
+        IGRFToCRG translator = new IGRFToCRG();
+        CrgExportFormat export = new CrgExportFormat();
 
-        File output = new File(outputFile);
+        List<File> input = new ArrayList<>();
 
-        if(!output.exists()) {
-            output.createNewFile();
+        if(args.length == 0) {
+            FileDialog openFileDialog = new FileDialog(new Frame(), "Open IGRF Excel Files for Import", FileDialog.LOAD);
+            openFileDialog.setMultipleMode(true);
+            openFileDialog.setFile("*.xlsx");
+            openFileDialog.setVisible(true);
+            for (File in : openFileDialog.getFiles()) {
+                input.add(in);
+            }
+        } else {
+            for (String filename : args) {
+                if(filename.endsWith(".xlsx")) {
+                    input.add(new File(filename));
+                }
+            }
         }
 
-        IGRF igrf = parser.parse(wb);
+
+        if(input.size() > 0) {
+            for (File file : input) {
+                Workbook wb = WorkbookFactory.create(file);
+                IGRF igrf = parser.parse(wb);
+                export.getTeams().addAll(translator.generateFromIGRF(igrf));
+            }
+
+            FileDialog saveFileDialog = new FileDialog(new Frame(), "Save", FileDialog.SAVE);
+            saveFileDialog.setFile("export.xml");
+            saveFileDialog.setVisible(true);
+
+            File output = new File(saveFileDialog.getDirectory(), saveFileDialog.getFile());
+
+            if (!output.exists()) {
+                output.createNewFile();
+            }
 
 
-        CrgExportFormat export = exporter.generateFromIGRF(igrf);
-        exporter.writeOutput(export, output);
+            try (CRGXMLWriter writer = new CRGXMLWriter(new FileOutputStream(output))) {
+                writer.writeOutput(export);
+            }
+        }
     }
 
-    public CrgExportFormat generateFromIGRF(IGRF igrf) {
+    public List<CrgExportTeam> generateFromIGRF(IGRF igrf) {
 
-        CrgExportFormat format = new CrgExportFormat();
+        List<CrgExportTeam> teams = new ArrayList<>();
 
 
 
@@ -74,54 +97,9 @@ public class IGRFToCRG {
         }
 
 
-        format.getTeams().add(home);
-        format.getTeams().add(away);
+        teams.add(home);
+        teams.add(away);
 
-        return format;
+        return teams;
     }
-
-    public void writeOutput(CrgExportFormat export, File file) {
-        try(OutputStream os = new FileOutputStream(file)) {
-            JAXBContext context = JAXBContext.newInstance(CrgExportFormat.class);
-            Marshaller marshaller = context.createMarshaller();
-
-           // marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-
-            XMLSerializer serializer = getXMLSerializer(os);
-
-
-            marshaller.marshal(export, serializer.asContentHandler());
-        }catch(JAXBException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private XMLSerializer getXMLSerializer(OutputStream out) throws FileNotFoundException {
-        // configure an OutputFormat to handle CDATA
-        OutputFormat of = new OutputFormat();
-
-        // specify which of your elements you want to be handled as CDATA.
-        // The use of the '^' between the namespaceURI and the localname
-        // seems to be an implementation detail of the xerces code.
-        // When processing xml that doesn't use namespaces, simply omit the
-        // namespace prefix as shown in the third CDataElement below.
-        of.setCDataElements(
-                new String[] {
-                        "^Number",   //
-                        "^Name" });   //
-
-        // set any other options you'd like
-        //of.setPreserveSpace(true);
-        //of.setIndenting(true);
-
-        // create the serializer
-        XMLSerializer serializer = new XMLSerializer(of);
-        serializer.setOutputByteStream(out);
-
-        return serializer;
-    }
-
 }
